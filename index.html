@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BM ANIMALS - Smart Ecosystem</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        :root { --primary-green: #2ecc71; --dark-bg: #0a0a0a; }
+        body { background-color: var(--dark-bg); color: white; font-family: sans-serif; margin: 0; text-align: center; }
+        
+        /* واجهة التحميل الذكية */
+        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #222; border-top-color: var(--primary-green); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* واجهة التحويل للمتصفحات الخارجية */
+        #external-browser-msg { display: none; padding: 40px 20px; }
+        .btn-download { background: var(--primary-green); color: #000; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 20px; }
+        
+        /* الواجهة الرئيسية للتطبيق */
+        #app-content { display: none; padding: 15px; }
+        .service-card { background: #161616; padding: 20px; border-radius: 20px; margin: 10px 0; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: var(--primary-green);">جاري تهيئة BM ANIMALS...</p>
+    </div>
+
+    <div id="external-browser-msg">
+        <h2>🐾 BM ANIMALS</h2>
+        <p>هذا التطبيق جزء من منظومة Pi Network البيئية.</p>
+        <p>للحصول على كامل المميزات والدفع بعملة Pi، يرجى فتح الرابط من داخل متصفح Pi.</p>
+        <a href="https://play.google.com/store/apps/details?id=it.pinetwork.viewer" class="btn-download">تحميل Pi Browser من Google Play</a>
+        <br><br>
+        <a href="https://bmanimals6713.pinet.com" style="color: var(--primary-green);">أو استمر عبر PiNet</a>
+    </div>
+
+    <div id="app-content">
+        <header style="padding: 10px; border-bottom: 1px solid #333;">
+            <h2 style="color: var(--primary-green);">BM ANIMALS</h2>
+        </header>
+        <div class="service-card">
+            <h3>المساعد النجمي Stellar</h3>
+            <p>أهلاً بك في أول واجهة للتطبيق</p>
+        </div>
+        <div class="service-card">
+            <p>عمولة المنصة: 3.14%</p>
+        </div>
+    </div>
+
+    <script>
+        const Pi = window.Pi;
+
+        function isPiBrowser() {
+            return navigator.userAgent.includes("PiBrowser");
+        }
+
+        async function initApp() {
+            const loading = document.getElementById('loading-screen');
+            const external = document.getElementById('external-browser-msg');
+            const app = document.getElementById('app-content');
+
+            if (isPiBrowser()) {
+                // تنفيذ الدخول الصامت داخل الإيكوسيستم
+                try {
+                    Pi.init({ version: "2.0", sandbox: false });
+                    await Pi.authenticate(['username'], (p) => {});
+                    
+                    loading.style.display = 'none';
+                    app.style.display = 'block';
+                } catch (e) {
+                    // في حال فشل التوثيق، افتح الواجهة على أي حال لضمان عدم التعليق
+                    loading.style.display = 'none';
+                    app.style.display = 'block';
+                }
+            } else {
+                // تحويل المستخدم أو إظهار رابط جوجل بلاي إذا كان خارج المتصفح
+                loading.style.display = 'none';
+                external.style.display = 'block';
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
 
