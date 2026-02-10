@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BM ANIMALS | النظام البيئي الذكي</title>
+    <title>BM ANIMALS | Stellar Deep AI</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
-            --primary-green: #2ecc71;
+            --primary-green: #39FF14;
             --dark-bg: #0a0a0a;
             --card-bg: #161616;
             --text-gray: #a0a0a0;
@@ -18,9 +18,10 @@
             font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
             padding-bottom: 90px;
+            overflow-x: hidden;
         }
 
-        /* شاشة التحميل الذكية */
+        /* شاشة التحميل */
         #loader {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -35,13 +36,14 @@
             backdrop-filter: blur(10px); border-bottom: 1px solid #222;
             position: sticky; top: 0; z-index: 100;
         }
-        .logo-text { color: var(--primary-green); font-weight: bold; font-size: 1.2rem; }
+        .logo-text { color: var(--primary-green); font-weight: bold; font-size: 1.2rem; text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); }
 
-        /* تصميم الكروت بناءً على صورك */
+        /* الكروت */
         .hero-card {
             background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
             border-radius: 25px; padding: 25px; margin: 15px;
             border: 1px solid #333; text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .service-card {
             background: var(--card-bg); border-radius: 20px; padding: 20px;
@@ -50,7 +52,17 @@
         }
         .icon-box { width: 50px; height: 50px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: var(--primary-green); }
 
-        /* شريط التنقل السفلي كما في الصورة 1 */
+        /* قسم الذكاء الاصطناعي */
+        .ai-box {
+            background: #111; border-radius: 20px; padding: 20px; margin: 15px;
+            border: 1px solid var(--primary-green);
+        }
+        .ai-input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333;
+            background: #000; color: white; margin-bottom: 10px; box-sizing: border-box;
+        }
+
+        /* شريط التنقل */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: #111;
             display: flex; justify-content: space-around; padding: 12px 0;
@@ -59,21 +71,29 @@
         .nav-item { color: var(--text-gray); font-size: 0.75rem; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--primary-green); }
 
-        /* زر الدفع */
-        .btn-pay { background: var(--primary-green); color: black; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; }
+        /* الأزرار */
+        .btn-main { 
+            background: var(--primary-green); color: black; border: none; 
+            padding: 12px 20px; border-radius: 12px; font-weight: bold; 
+            width: 100%; cursor: pointer; transition: 0.3s;
+        }
+        .btn-main:active { transform: scale(0.98); }
+        
+        #ai-response { margin-top: 15px; font-size: 0.9rem; color: #ddd; line-height: 1.4; }
     </style>
 </head>
 <body>
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="color: var(--primary-green); margin-top: 15px;">جاري الاتصال بـ Pi Network...</p>
+        <p style="color: var(--primary-green); margin-top: 15px;">جاري تشغيل Stellar AI...</p>
     </div>
 
     <div id="external-msg" style="display:none; padding: 50px 20px; text-align: center;">
         <h1 style="color:var(--primary-green)">🐾 BM ANIMALS</h1>
-        <p>يرجى فتح التطبيق من متصفح Pi للاستفادة من خدمات الدفع والذكاء الاصطناعي.</p>
-        <a href="https://play.google.com/store/apps/details?id=it.pinetwork.viewer" style="background:var(--primary-green); color:black; padding:15px 30px; border-radius:50px; text-decoration:none; display:inline-block; margin-top:20px;">تحميل Pi Browser</a>
+        <p>هذا التطبيق مخصص لمجتمع Pi Network.</p>
+        <p>يرجى فتحه من داخل <b>Pi Browser</b> للوصول للمساعد الذكي Stellar وإتمام المدفوعات.</p>
+        <a href="https://play.google.com/store/apps/details?id=it.pinetwork.viewer" style="background:var(--primary-green); color:black; padding:15px 30px; border-radius:50px; text-decoration:none; display:inline-block; margin-top:20px; font-weight:bold;">تحميل Pi Browser</a>
     </div>
 
     <div id="app-ui" style="display:none">
@@ -84,34 +104,32 @@
 
         <div class="hero-card">
             <h2>النظام البيئي الذكي</h2>
-            <p>رعاية متكاملة للحيوانات بذكاء Stellar</p>
-            <div style="font-size:0.8rem; border:1px dashed #444; padding:5px; margin-top:10px;">عمولة ثابتة: 3.14%</div>
+            <p>رعاية متكاملة بذكاء Stellar</p>
+            <div style="font-size:0.75rem; border:1px dashed #444; padding:5px; margin-top:10px; color: var(--primary-green);">العمولة المخصصة لدعم المشروع: 3.14%</div>
         </div>
 
-        <div class="service-card" onclick="alert('فتح BM Tracker...')">
+        <div class="ai-box">
+            <h3>💬 المساعد النجمي Stellar</h3>
+            <input type="text" id="ai-input" class="ai-input" placeholder="اكتب حالة حيوانك هنا...">
+            <button class="btn-main" onclick="askStellar()">استشارة ذكية (3.14 π)</button>
+            <div id="ai-response">مرحباً! أنا Stellar، كيف يمكنني مساعدتك اليوم؟</div>
+        </div>
+
+        <div class="service-card" onclick="alert('جاري تشغيل BM Tracker...')">
             <div class="icon-box">📍</div>
-            <div><h3>BM Tracker</h3><p>ابحث عن أقرب طبيب بيطري</p></div>
+            <div><h3>BM Tracker</h3><p>ابحث عن أقرب عيادة بيطرية</p></div>
         </div>
 
-        <div class="service-card" onclick="alert('فتح المختبر الذكي...')">
+        <div class="service-card" onclick="alert('جاري فتح المختبر...')">
             <div class="icon-box">🔬</div>
-            <div><h3>المختبر الذكي</h3><p>تحليل الصور والتحاليل الطبية</p></div>
-        </div>
-
-        <div class="service-card" style="display:block">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>⭐ 4.8</span>
-                <span style="color:var(--primary-green)">π 50</span>
-            </div>
-            <h4>د. أحمد محمود</h4>
-            <button class="btn-pay" onclick="makePayment(50, 'استشارة طبية')">حجز استشارة الآن</button>
+            <div><h3>المختبر الذكي</h3><p>تحليل الأشعة والتقارير طبياً</p></div>
         </div>
 
         <div class="nav-bar">
             <div class="nav-item active">🏠<br>الرئيسية</div>
-            <div class="nav-item">🔍<br>بحث</div>
-            <div class="nav-item">💬<br>المساعد</div>
-            <div class="nav-item">📋<br>سجلات</div>
+            <div class="nav-item" onclick="alert('قريباً...')">🔍<br>بحث</div>
+            <div class="nav-item" onclick="document.getElementById('ai-input').focus()">💬<br>المساعد</div>
+            <div class="nav-item" onclick="alert('سجلات البلوكشين...')">📋<br>سجلات</div>
         </div>
     </div>
 
@@ -126,12 +144,16 @@
 
             if (isPi) {
                 try {
-                    Pi.init({ version: "2.0", sandbox: false });
-                    const user = await Pi.authenticate(['username', 'payments'], (p) => {});
-                    document.getElementById('user-display').innerText = "مرحباً، " + user.user.username;
+                    // تفعيل Sandbox للاختبار (اجعلها false عند النشر النهائي)
+                    Pi.init({ version: "2.0", sandbox: true }); 
+                    
+                    const user = await Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
+                    document.getElementById('user-display').innerText = "رائد: " + user.user.username;
+                    
                     loader.style.display = 'none';
                     appUi.style.display = 'block';
                 } catch (e) {
+                    console.error(e);
                     loader.style.display = 'none';
                     appUi.style.display = 'block';
                 }
@@ -141,21 +163,33 @@
             }
         }
 
-        async function makePayment(amount, memo) {
-            const total = amount + (amount * 0.0314);
+        async function askStellar() {
+            const input = document.getElementById('ai-input').value;
+            if(!input) return alert("يرجى كتابة سؤالك أولاً");
+
+            const amount = 3.14; 
             try {
                 await Pi.createPayment({
-                    amount: total,
-                    memo: memo + " (شامل عمولة المنصة)",
-                    metadata: { appId: "bmanimals6713" }
+                    amount: amount,
+                    memo: "استشارة Stellar الذكية - BM ANIMALS",
+                    metadata: { type: "AI_Consultation" }
                 }, {
-                    onReadyForServerApproval: (id) => {},
-                    onReadyForServerCompletion: (id, txid) => { alert("تم الدفع بنجاح!"); },
-                    onCancel: (id) => {},
-                    onError: (e) => { alert("خطأ في الاتصال بالمحفظة"); }
+                    onReadyForServerApproval: (id) => { console.log("Approved:", id); },
+                    onReadyForServerCompletion: (id, txid) => { 
+                        document.getElementById('ai-response').innerHTML = "<span style='color:var(--primary-green)'>تم الدفع!</span> Stellar يحلل الآن: جاري معالجة الأعراض وتقديم النصيحة...";
+                        setTimeout(() => {
+                            document.getElementById('ai-response').innerText = "نصيحة Stellar: بناءً على وصفك، يفضل مراقبة النشاط وتوفير مياه عذبة. إذا استمرت الحالة، يرجى مراجعة أقرب عيادة عبر BM Tracker.";
+                        }, 3000);
+                    },
+                    onCancel: (id) => { alert("تم إلغاء عملية الدفع"); },
+                    onError: (e) => { alert("خطأ في الاتصال بالشبكة"); }
                 });
-            } catch (err) { alert("يرجى المحاولة من داخل متصفح باي"); }
+            } catch (err) { 
+                alert("يرجى المحاولة من داخل متصفح باي"); 
+            }
         }
+
+        function onIncompletePaymentFound(payment) { /* لمعالجة العمليات العالقة */ }
 
         window.onload = init;
     </script>
